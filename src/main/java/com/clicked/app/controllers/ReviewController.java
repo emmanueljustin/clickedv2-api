@@ -40,14 +40,28 @@ public class ReviewController {
 
   @PostMapping(value = BASE_PATH + "/review/add", produces = "application/json")
   public ResponseEntity<ApiResponse<ReviewDto>> postMethodName(@RequestBody AddReviewDto request) {
-      ReviewDto addedReview = reviewService.addReviews(request);
+    ReviewDto addedReview = reviewService.addReviews(request);
 
-      return ResponseEntity.status(200).body(
-        new ApiResponse<ReviewDto>(
-          "ok",
-          "You have succesfully added a review",
-          addedReview
-        )
-      );
+    return ResponseEntity.status(200).body(
+      new ApiResponse<ReviewDto>(
+        "ok",
+        "You have succesfully added a review",
+        addedReview
+      )
+    );
   }
+
+  @PostMapping(value = BASE_PATH + "/review/update", produces = "application/json")
+  public ResponseEntity<ApiResponse<ReviewDto>> postMethodName(@RequestBody ReviewDto request) {
+    ReviewDto updatedReview = reviewService.updateReview(request);
+    
+    return ResponseEntity.status(200).body(
+      new ApiResponse<ReviewDto>(
+        "ok",
+        "Successfully updated",
+        updatedReview
+      )
+    );
+  }
+  
 }
