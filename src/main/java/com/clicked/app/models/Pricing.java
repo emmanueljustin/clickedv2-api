@@ -27,7 +27,7 @@ public class Pricing {
   @Column(name = "description")
   private String description;
 
-  @OneToMany(mappedBy = "pricing", cascade = CascadeType.ALL)
+  @OneToMany(mappedBy = "pricing", cascade = {CascadeType.ALL, CascadeType.REMOVE}, orphanRemoval = true)
   private List<Service> services;
 
   @Column(name = "amount")

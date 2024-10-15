@@ -8,11 +8,11 @@ import lombok.Data;
 
 @Data
 @Builder
-public class GetPricingResponseDto {
+public class PricingDto {
   private long id;
   private String title;
   private String description;
-  private List<GetServicesResponseDto> services;
+  private List<ServiceDto> services;
   private BigDecimal amount;
   private String btnName;
   private String color;

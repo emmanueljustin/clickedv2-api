@@ -5,7 +5,7 @@ import lombok.Data;
 
 @Data
 @Builder
-public class GetServicesResponseDto {
+public class ServiceDto {
   private Long id;
   private String serviceName;
   private boolean included;
