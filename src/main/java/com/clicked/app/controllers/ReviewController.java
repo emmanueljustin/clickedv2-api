@@ -3,7 +3,9 @@ package com.clicked.app.controllers;
 import java.util.List;
 
 import com.clicked.app.dto.ApiResponse;
+import com.clicked.app.dto.ApiResponseMsgOnly;
 import com.clicked.app.dto.reviewdto.AddReviewDto;
+import com.clicked.app.dto.reviewdto.DeleteReviewDto;
 import com.clicked.app.dto.reviewdto.ReviewDto;
 import com.clicked.app.services.review.IReviewService;
 
@@ -40,14 +42,48 @@ public class ReviewController {
 
   @PostMapping(value = BASE_PATH + "/review/add", produces = "application/json")
   public ResponseEntity<ApiResponse<ReviewDto>> postMethodName(@RequestBody AddReviewDto request) {
-      ReviewDto addedReview = reviewService.addReviews(request);
+    ReviewDto addedReview = reviewService.addReviews(request);
 
+    return ResponseEntity.status(200).body(
+      new ApiResponse<ReviewDto>(
+        "ok",
+        "You have succesfully added a review",
+        addedReview
+      )
+    );
+  }
+
+  @PostMapping(value = BASE_PATH + "/review/update", produces = "application/json")
+  public ResponseEntity<ApiResponse<ReviewDto>> updateReview(@RequestBody ReviewDto request) {
+    ReviewDto updatedReview = reviewService.updateReview(request);
+    
+    return ResponseEntity.status(200).body(
+      new ApiResponse<ReviewDto>(
+        "ok",
+        "Successfully updated",
+        updatedReview
+      )
+    );
+  }
+  
+  @PostMapping(value = BASE_PATH + "/review/delete", produces = "application/json")
+  public ResponseEntity<ApiResponseMsgOnly> deleteReview(@RequestBody DeleteReviewDto request) {
+    boolean result = reviewService.deleteReview(request);
+
+    if (result) {
       return ResponseEntity.status(200).body(
-        new ApiResponse<ReviewDto>(
+        new ApiResponseMsgOnly(
           "ok",
-          "You have succesfully added a review",
-          addedReview
+          "Successfully deleted"
         )
       );
+    } else {
+      return ResponseEntity.status(200).body(
+        new ApiResponseMsgOnly(
+          "err",
+          "Oops! We cannot delete the item"
+        )
+      );
+    }
   }
 }
