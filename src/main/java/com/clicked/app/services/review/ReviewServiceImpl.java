@@ -10,7 +10,7 @@ import com.clicked.app.dto.reviewdto.AddReviewDto;
 import com.clicked.app.dto.reviewdto.DeleteReviewDto;
 import com.clicked.app.dto.reviewdto.ReviewDto;
 import com.clicked.app.models.Review;
-import com.clicked.app.repositories.review.IReviewRepository;
+import com.clicked.app.repositories.IReviewRepository;
 
 import jakarta.persistence.EntityNotFoundException;
 
