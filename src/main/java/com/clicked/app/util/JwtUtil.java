@@ -2,6 +2,7 @@ package com.clicked.app.util;
 
 import java.util.Date;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Jwts;
@@ -11,7 +12,9 @@ import io.jsonwebtoken.SignatureAlgorithm;
 public class JwtUtil {
   // text = Authorizer
   // secretKey = root
-  private String SECRET_KEY = "83b69cd09e620c21eb57b5a84b96cfe49ba2f27faf89fd15a4cc467a155e65bc";
+
+  @Value("${API_SECRET_KEY}")
+  private String SECRET_KEY;
 
   public String generateToken(String username) {
     return Jwts.builder()

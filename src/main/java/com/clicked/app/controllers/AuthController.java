@@ -5,12 +5,17 @@ import org.springframework.web.bind.annotation.RestController;
 import com.clicked.app.dto.ApiResponse;
 import com.clicked.app.dto.authdto.AuthResponseDto;
 import com.clicked.app.dto.authdto.LoginRequestDto;
+import com.clicked.app.dto.authdto.UserResponseDto;
 import com.clicked.app.models.User;
 import com.clicked.app.services.auth.IAuthService;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 @RestController
 public class AuthController {
@@ -68,4 +73,28 @@ public class AuthController {
       );
     }
   }
+
+  @GetMapping(value = BASE_PATH + "/auth/user")
+  public ResponseEntity<ApiResponse<?>> getMethodName(HttpServletRequest request) {
+    try {
+      UserResponseDto result = authService.getUserData(request);
+
+      return ResponseEntity.status(200).body(
+        new ApiResponse<UserResponseDto>(
+          "ok",
+          "Here is your user credentials",
+          result
+        )
+      );
+    } catch (RuntimeException e) {
+      return ResponseEntity.status(403).body(
+        new ApiResponse<String>(
+          "err",
+          "We're unable to fetch your user data",
+          e.getMessage()
+        )
+      );
+    }
+  }
+  
 }

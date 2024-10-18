@@ -8,9 +8,12 @@ import org.springframework.stereotype.Service;
 
 import com.clicked.app.dto.authdto.AuthResponseDto;
 import com.clicked.app.dto.authdto.LoginRequestDto;
+import com.clicked.app.dto.authdto.UserResponseDto;
 import com.clicked.app.models.User;
 import com.clicked.app.repositories.IAuthRepository;
 import com.clicked.app.util.JwtUtil;
+
+import jakarta.servlet.http.HttpServletRequest;
 
 @Service
 public class AuthService implements IAuthService {
@@ -63,5 +66,29 @@ public class AuthService implements IAuthService {
     }
 
     return jwtUtil.generateToken(user.getUsername());
+  }
+
+  @Override
+  public UserResponseDto getUserData(HttpServletRequest request) {
+    String token = request.getHeader("Authorization").substring(7);
+
+    String username = jwtUtil.extractUsername(token);
+
+    User user = authRepository.findByUsername(username)
+      .orElseThrow(() -> new RuntimeException("User cannot be found"));
+
+    UserResponseDto userResponse = UserResponseDto.builder()
+      .id(user.getId())
+      .username(user.getUsername())
+      .email(user.getEmail())
+      .firstName(user.getFirstName())
+      .lastName(user.getLastName())
+      .age(user.getAge())
+      .gender(user.getGender())
+      .createdAt(user.getCreatedAt())
+      .updatedAt(user.getUpdatedAt())
+      .build();
+
+    return userResponse;
   }
 }
