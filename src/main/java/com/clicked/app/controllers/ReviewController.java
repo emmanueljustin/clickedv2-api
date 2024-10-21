@@ -6,11 +6,12 @@ import com.clicked.app.dto.ApiResponse;
 import com.clicked.app.dto.ApiResponseMsgOnly;
 import com.clicked.app.dto.reviewdto.AddReviewDto;
 import com.clicked.app.dto.reviewdto.DeleteReviewDto;
+import com.clicked.app.dto.reviewdto.PageRequestDto;
+import com.clicked.app.dto.reviewdto.PaginatedReviewDto;
 import com.clicked.app.dto.reviewdto.ReviewDto;
 import com.clicked.app.services.review.IReviewService;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -27,12 +28,12 @@ public class ReviewController {
     this.reviewService = reviewService;
   }
 
-  @GetMapping(value = BASE_PATH + "/review/get", produces = "application/json")
-  public ResponseEntity<ApiResponse<List<ReviewDto>>> getAllReviews() {
-    List<ReviewDto> reviews =  reviewService.getAllReviews();
+  @PostMapping(value = BASE_PATH + "/review/get", produces = "application/json")
+  public ResponseEntity<ApiResponse<PaginatedReviewDto>> getAllReviews(@RequestBody PageRequestDto request) {
+    PaginatedReviewDto reviews = reviewService.getAllReviews(request);
 
     return ResponseEntity.status(200).body(
-      new ApiResponse<List<ReviewDto>>(
+      new ApiResponse<PaginatedReviewDto>(
         "ok",
         "Here is your list of reviews",
         reviews

@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 
 import com.clicked.app.dto.reviewdto.AddReviewDto;
 import com.clicked.app.dto.reviewdto.DeleteReviewDto;
+import com.clicked.app.dto.reviewdto.PageRequestDto;
+import com.clicked.app.dto.reviewdto.PaginatedReviewDto;
 import com.clicked.app.dto.reviewdto.ReviewDto;
 import com.clicked.app.models.Review;
 import com.clicked.app.repositories.IReviewRepository;
@@ -24,10 +26,30 @@ public class ReviewServiceImpl implements IReviewService {
   }
 
   @Override
-  public List<ReviewDto> getAllReviews() {
+  public PaginatedReviewDto getAllReviews(PageRequestDto request) {
     List<Review> reviews = reviewRepository.findAll();
 
-    return reviews.stream().map((review) -> mapToReviewDto(review)).collect(Collectors.toList());
+    int pageIndex = request.getPage() - 1; // Used to access the first page into 1 and not 0
+
+    int start = pageIndex * request.getSize();
+    int end = Math.min(start + request.getSize(), reviews.size());
+
+    List<Review> paginatedReview = reviews.subList(start, end);
+    
+    List<ReviewDto> pagedReview = paginatedReview.stream().map((review) -> mapToReviewDto(review)).collect(Collectors.toList());
+
+    int totalCount = reviews.size();
+
+    int totalPages = (int) Math.ceil((double) totalCount / request.getSize());
+
+    PaginatedReviewDto paginatedResponse = PaginatedReviewDto.builder()
+      .reviews(pagedReview)
+      .currPage(request.getPage())
+      .totalItems(totalCount)
+      .totalPages(totalPages)
+      .build();
+
+    return paginatedResponse;
   }
 
   @Override
@@ -76,7 +98,7 @@ public class ReviewServiceImpl implements IReviewService {
 
     return false;
   }
-  
+
   private ReviewDto mapToReviewDto(Review review) {
     ReviewDto reviewDto = ReviewDto.builder()
     .id(review.getId())
